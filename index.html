@@ -1,0 +1,63 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css">
+  <title>Azqila Tuan Putri</title>
+</head>
+<body>
+  <h1>Azqila</h1>
+  <p>Kalau foto jadi bidadari</p>
+  <div class="camera-container">
+    <video id="video" autoplay muted></video>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <div id="loveText" class="love-text" style="display:none;">Love youu sayang!</div>
+    <br />
+    <button onclick="takePhoto()">Ambil Foto</button>
+    <button onclick="toggleVideo()">Foto / Video</button>
+    <a id="downloadLink" download="azqila-foto.png">Download Foto</a>
+  </div>  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const downloadLink = document.getElementById('downloadLink');
+    const loveText = document.getElementById('loveText');
+    let isPhotoMode = true;
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        console.error('Gagal mengakses kamera: ', err);
+      });
+
+    function takePhoto() {
+      if (isPhotoMode) {
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.style.display = 'block';
+        video.style.display = 'none';
+
+        // Tampilkan teks love
+        loveText.style.display = 'block';
+        setTimeout(() => loveText.style.display = 'none', 2000);
+
+        // Buat file gambar untuk diunduh
+        const imageUrl = canvas.toDataURL('image/png');
+        downloadLink.href = imageUrl;
+        downloadLink.style.display = 'inline-block';
+      } else {
+        alert('Mode video tidak bisa mengambil foto. Ubah ke mode foto dulu.');
+      }
+    }
+
+    function toggleVideo() {
+      isPhotoMode = !isPhotoMode;
+      canvas.style.display = 'none';
+      video.style.display = 'block';
+      downloadLink.style.display = 'none';
+    }
+  </script></body>
+</html>
